@@ -6,7 +6,7 @@ SERVER_PID ?= /tmp/di-server-test
 all: _installComposer
 
 .PHONY: qa
-qa: qa/unit qa/integration
+qa: qa/lint qa/unit qa/integration qa/lint qa/cs qa/md qa/cp
 
 qa/unit:
 	$(PHPUNIT_BIN) -c tests/unit/phpunit.xml
@@ -16,8 +16,20 @@ qa/integration:
 	$(PHPUNIT_BIN) -c tests/integration/phpunit.xml
 	@make stop
 
+qa/lint:
+	./vendor/bin/parallel-lint --exclude vendor .
+
+qa/cs:
+	./vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=vendor,build,etalio-scripts .
+
+qa/md:
+	-./vendor/bin/phpmd ./ text codesize,design,naming,unusedcode,controversial --strict --exclude vendor
+
+qa/cp:
+	./vendor/bin/phpcpd --min-lines 3 --min-tokens 70 --progress --exclude vendor ./
+
 watch/%:
-		watchmedo shell-command -i "./vendor/*;./build/*;./.git/*;./coverage/*" -R -D -c "make $*"
+	watchmedo shell-command -i "./vendor/*;./build/*;./.git/*;./coverage/*" -R -D -c "make $*"
 
 go: stop
 	@echo "Starting the server "
