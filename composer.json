@@ -1,5 +1,5 @@
 {
-    "name": "3fs/php-di-server",
+    "name": "trifs/di-server",
     "description": "minimalistic framework on top of DI",
     "require": {
         "trifs/di": "1.*"
