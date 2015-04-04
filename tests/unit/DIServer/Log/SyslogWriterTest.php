@@ -11,7 +11,7 @@ class SyslogWriterTest extends TestCase
      */
     public function testWrite()
     {
-        $this->di->config = function () {
+        $this->app->config = function () {
             return [
                 'log' => [
                     'syslog' => [
@@ -21,7 +21,7 @@ class SyslogWriterTest extends TestCase
                 ],
             ];
         };
-        $writer = new SyslogWriter($this->di);
+        $writer = new SyslogWriter($this->app);
         $writer->write(LOG_WARNING, 'One message to rule them all');
     }
 
@@ -30,11 +30,11 @@ class SyslogWriterTest extends TestCase
      */
     public function testWriteWithoutConfig()
     {
-        $this->di->config = function () {
+        $this->app->config = function () {
             return [];
         };
 
-        $writer = new SyslogWriter($this->di);
+        $writer = new SyslogWriter($this->app);
         $writer->write(LOG_WARNING, 'One message to rule them all');
     }
 }

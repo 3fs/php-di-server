@@ -9,14 +9,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * @var \trifs\DI\Container
      */
-    protected $di;
+    protected $app;
 
     /**
      * @return void
      */
     public function setUp()
     {
-        $this->di = new Container;
+        $this->app = new Container;
 
         parent::setUp();
     }

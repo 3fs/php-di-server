@@ -2,11 +2,11 @@
 
 use \trifs\DIServer\Http;
 
-return function ($di) {
+return function ($app) {
     return [
         'code' => Http::CODE_OK,
         'data' => [
-            'test' => $di->request->getRequired('test'),
+            'test' => $app->request->getRequired('test'),
         ],
     ];
 };

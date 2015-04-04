@@ -15,13 +15,13 @@ use \trifs\DI\Container;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
-$di = new Container;
-$di->register(new ServiceProvider);
-$di->config = function () {
+$app = new Container;
+$app->register(new ServiceProvider);
+$app->config = function () {
     return [
         'endpoints' => __DIR__ . '/endpoints',
     ];
 };
-$di->routes = include __DIR__ . '/routes.php';
+$app->routes = include __DIR__ . '/routes.php';
 
-$di->server->run();
+$app->server->run();

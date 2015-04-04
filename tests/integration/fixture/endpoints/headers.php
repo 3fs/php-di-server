@@ -2,11 +2,11 @@
 
 use \trifs\DIServer\Http;
 
-return function ($di) {
+return function ($app) {
     return [
         'code' => Http::CODE_OK,
         'data' => [
-            'test' => $di->request->getHeader('X-Test'),
+            'test' => $app->request->getHeader('X-Test'),
         ],
     ];
 };

@@ -11,8 +11,8 @@ class RequestIdServiceProviderTest extends TestCase
      */
     public function testRegister()
     {
-        $this->di->register(new RequestIdServiceProvider);
-        $this->assertTrue(isset($this->di->requestId));
+        $this->app->register(new RequestIdServiceProvider);
+        $this->assertTrue(isset($this->app->requestId));
     }
 
     /**
@@ -20,10 +20,10 @@ class RequestIdServiceProviderTest extends TestCase
      */
     public function testRequestIdWithRequestHeader()
     {
-        $this->di->register(new RequestIdServiceProvider);
+        $this->app->register(new RequestIdServiceProvider);
 
         // spoof request
-        $this->di->request = function () {
+        $this->app->request = function () {
             return new Request(
                 'GET',
                 '/method',
@@ -33,7 +33,7 @@ class RequestIdServiceProviderTest extends TestCase
             );
         };
 
-        $this->assertSame('headerId', $this->di->requestId);
+        $this->assertSame('headerId', $this->app->requestId);
     }
 
     /**
@@ -41,13 +41,13 @@ class RequestIdServiceProviderTest extends TestCase
      */
     public function testRequestIdWithRandomString()
     {
-        $this->di->register(new RequestIdServiceProvider);
+        $this->app->register(new RequestIdServiceProvider);
 
         // spoof request
-        $this->di->request = function () {
+        $this->app->request = function () {
             return new Request('GET', '/method', '', [], []);
         };
 
-        $this->assertRegExp('/[a-z0-9]{16}/', $this->di->requestId);
+        $this->assertRegExp('/[a-z0-9]{16}/', $this->app->requestId);
     }
 }

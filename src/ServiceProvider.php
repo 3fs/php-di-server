@@ -24,16 +24,16 @@ class ServiceProvider implements ServiceProviderInterface
      * @param \trifs\DI\Container
      * @return void
      */
-    public function register(Container $di)
+    public function register(Container $app)
     {
         // add server
-        $di->server = function ($di) {
-            return new Server($di);
+        $app->server = function ($app) {
+            return new Server($app);
         };
 
         // add request
         // TODO: clean up
-        $di->request = function ($di) {
+        $app->request = function ($app) {
             $requestUri    = $_SERVER['REQUEST_URI'];
             $requestMethod = $_SERVER['REQUEST_METHOD'];
 
@@ -61,20 +61,20 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         // add response
-        $di->response = function ($di) {
+        $app->response = function ($app) {
             return new Response;
         };
 
         // add log
-        $di->log = function ($di) {
+        $app->log = function ($app) {
             return new Log(
-                new ApiFormatter($di),
-                new SyslogWriter($di),
+                new ApiFormatter($app),
+                new SyslogWriter($app),
                 LOG_DEBUG
             );
         };
 
         // add requestId
-        $di->register(new RequestIdServiceProvider);
+        $app->register(new RequestIdServiceProvider);
     }
 }

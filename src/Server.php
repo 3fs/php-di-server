@@ -10,15 +10,15 @@ class Server
     /**
      * @var \trifs\DI\Container
      */
-    protected $di;
+    protected $app;
 
     /**
-     * @param \trifs\DI\Container $di
+     * @param \trifs\DI\Container $app
      * @return void
      */
-    public function __construct(Container $di)
+    public function __construct(Container $app)
     {
-        $this->di = $di;
+        $this->app = $app;
     }
 
     /**
@@ -29,17 +29,17 @@ class Server
         $successful = false;
         $route      = null;
         try {
-            $route  = $this->di->request->getMatchingRoute($this->di->routes);
+            $route  = $this->app->request->getMatchingRoute($this->app->routes);
             $output = $this->executeRoute($route);
-            $this->di->response->success($output);
+            $this->app->response->success($output);
             $successful = true;
         } catch (\Exception $e) {
-            $this->di->log->warning(sprintf(
+            $this->app->log->warning(sprintf(
                 'request failed with exception; code: %d, message: "%s"',
                 $e->getCode(),
                 $e->getMessage()
             ));
-            $this->di->response->fail($e);
+            $this->app->response->fail($e);
         }
     }
 
@@ -49,14 +49,14 @@ class Server
      */
     protected function executeRoute(array $route)
     {
-        $this->di->log->info(sprintf(
+        $this->app->log->info(sprintf(
             'executing endpoint "%s"',
             $route[2]
         ));
         $this->validateRoute($route);
         $method   = $route[2];
         $callback = include sprintf('%s/%s.php', $this->getEndpointsFolder(), $method);
-        return $callback($this->di);
+        return $callback($this->app);
     }
 
     /**
@@ -67,7 +67,7 @@ class Server
     protected function validateRoute(array $route)
     {
         if (!isset($route[2])) {
-            $this->di->log->error(sprintf(
+            $this->app->log->error(sprintf(
                 'route invalid "%s"',
                 json_encode($route)
             ));
@@ -83,10 +83,10 @@ class Server
      */
     protected function getEndpointsFolder()
     {
-        if (!isset($this->di->config['endpoints'])) {
+        if (!isset($this->app->config['endpoints'])) {
             throw new Exception('configuration endpoints not defined');
         }
 
-        return $this->di->config['endpoints'];
+        return $this->app->config['endpoints'];
     }
 }

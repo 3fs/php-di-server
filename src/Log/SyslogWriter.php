@@ -12,7 +12,7 @@ class SyslogWriter implements WriterInterface
     /**
      * @var \trifs\DI\Container
      */
-    private $di;
+    private $app;
 
     /**
      * @var boolean
@@ -25,12 +25,12 @@ class SyslogWriter implements WriterInterface
     protected $defaultFacility = LOG_USER;
 
     /**
-     * @param  \trifs\DI\Container $di
+     * @param  \trifs\DI\Container $app
      * @return void
      */
-    public function __construct(Container $di)
+    public function __construct(Container $app)
     {
-        $this->di = $di;
+        $this->app = $app;
     }
 
     /**
@@ -56,8 +56,8 @@ class SyslogWriter implements WriterInterface
      */
     protected function getLogFacility()
     {
-        if (isset($this->di->config['log']['syslog']['facility'])) {
-            return $this->di->config['log']['syslog']['facility'];
+        if (isset($this->app->config['log']['syslog']['facility'])) {
+            return $this->app->config['log']['syslog']['facility'];
         }
         return $this->defaultFacility;
     }
@@ -69,8 +69,8 @@ class SyslogWriter implements WriterInterface
      */
     protected function getApplicationId()
     {
-        if (isset($this->di->config['log']['syslog']['id'])) {
-            return $this->di->config['log']['syslog']['id'];
+        if (isset($this->app->config['log']['syslog']['id'])) {
+            return $this->app->config['log']['syslog']['id'];
         }
         return false;
     }

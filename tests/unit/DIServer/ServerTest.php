@@ -12,7 +12,7 @@ class ServerTest extends \trifs\DIServer\Tests\Unit\TestCase
      */
     public function testInitialisation()
     {
-        new Server($this->di);
+        new Server($this->app);
     }
 
     /**
@@ -20,7 +20,7 @@ class ServerTest extends \trifs\DIServer\Tests\Unit\TestCase
      */
     public function testRunShouldSendOutputOfTestCallbackToResponse()
     {
-        $di = $this->getDI('test');
+        $app = $this->getDI('test');
 
         $mockedResponse = $this->getMock('\trifs\DIServer\Response', ['success']);
         $mockedResponse->expects($this->once())
@@ -30,11 +30,11 @@ class ServerTest extends \trifs\DIServer\Tests\Unit\TestCase
                            'data' => 'test',
                        ]);
 
-        $di->response = function () use ($mockedResponse) {
+        $app->response = function () use ($mockedResponse) {
             return $mockedResponse;
         };
 
-        $server = new Server($di);
+        $server = new Server($app);
         $server->run();
     }
 
@@ -43,7 +43,7 @@ class ServerTest extends \trifs\DIServer\Tests\Unit\TestCase
      */
     public function testRunShouldTriggerFailOnResponse()
     {
-        $di = $this->getDI('exception');
+        $app = $this->getDI('exception');
 
         $mockCallback = function ($argument) {
             return $argument instanceof \Exception;
@@ -54,11 +54,11 @@ class ServerTest extends \trifs\DIServer\Tests\Unit\TestCase
                        ->method('fail')
                        ->with($this->callback($mockCallback));
 
-        $di->response = function ($di) use ($mockedResponse) {
+        $app->response = function ($app) use ($mockedResponse) {
             return $mockedResponse;
         };
 
-        $server = new Server($di);
+        $server = new Server($app);
         $server->run();
     }
 
@@ -68,33 +68,33 @@ class ServerTest extends \trifs\DIServer\Tests\Unit\TestCase
      */
     protected function getDI($route)
     {
-        $di = $this->di;
+        $app = $this->app;
 
-        $di->routes = function ($di) use ($route) {
+        $app->routes = function ($app) use ($route) {
             return [['GET', '/' . $route, $route]];
         };
 
-        $di->request = function ($di) use ($route) {
+        $app->request = function ($app) use ($route) {
             return new \trifs\DIServer\Request(
                 'GET',
                 '/' . $route
             );
         };
 
-        $di->requestTime = function () {
+        $app->requestTime = function () {
             return 123;
         };
 
-        $di->log = function () {
+        $app->log = function () {
             return $this->getMock('SomeLogger', ['info', 'warning']);
         };
 
-        $di->config = function () {
+        $app->config = function () {
             return [
                 'endpoints' => __DIR__ . '/../helpers/endpoints',
             ];
         };
 
-        return $di;
+        return $app;
     }
 }

@@ -10,12 +10,12 @@ class ServiceProviderTest extends TestCase
      */
     public function testRegister()
     {
-        $this->di->register(new ServiceProvider);
-        $this->assertTrue(isset($this->di->log));
-        $this->assertTrue(isset($this->di->request));
-        $this->assertTrue(isset($this->di->requestId));
-        $this->assertTrue(isset($this->di->response));
-        $this->assertTrue(isset($this->di->server));
+        $this->app->register(new ServiceProvider);
+        $this->assertTrue(isset($this->app->log));
+        $this->assertTrue(isset($this->app->request));
+        $this->assertTrue(isset($this->app->requestId));
+        $this->assertTrue(isset($this->app->response));
+        $this->assertTrue(isset($this->app->server));
     }
 
     // /**
@@ -23,10 +23,10 @@ class ServiceProviderTest extends TestCase
     //  */
     // public function testRequestIdWithRequestHeader()
     // {
-    //     $this->di->register(new RequestIdServiceProvider);
+    //     $this->app->register(new RequestIdServiceProvider);
 
     //     // spoof request
-    //     $this->di->request = function () {
+    //     $this->app->request = function () {
     //         return new Request(
     //             'GET',
     //             '/method',
@@ -36,7 +36,7 @@ class ServiceProviderTest extends TestCase
     //         );
     //     };
 
-    //     $this->assertSame('headerId', $this->di->requestId);
+    //     $this->assertSame('headerId', $this->app->requestId);
     // }
 
     // /**
@@ -44,13 +44,13 @@ class ServiceProviderTest extends TestCase
     //  */
     // public function testRequestIdWithRandomString()
     // {
-    //     $this->di->register(new RequestIdServiceProvider);
+    //     $this->app->register(new RequestIdServiceProvider);
 
     //     // spoof request
-    //     $this->di->request = function () {
+    //     $this->app->request = function () {
     //         return new Request('GET', '/method', '', [], []);
     //     };
 
-    //     $this->assertRegExp('/[a-z0-9]{16}/', $this->di->requestId);
+    //     $this->assertRegExp('/[a-z0-9]{16}/', $this->app->requestId);
     // }
 }

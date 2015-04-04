@@ -12,13 +12,13 @@ class RequestIdServiceProvider implements ServiceProviderInterface
     protected $idLength = 16;
 
     /**
-     * @param  \trifs\DI\Container $di
+     * @param  \trifs\DI\Container $app
      * @return void
      */
-    public function register(Container $di)
+    public function register(Container $app)
     {
-        $di->requestId = function ($di) {
-            $idFromHeader = $di->request->getHeader('X-Request-Id');
+        $app->requestId = function ($app) {
+            $idFromHeader = $app->request->getHeader('X-Request-Id');
             return $idFromHeader ?: $this->generateId();
         };
     }

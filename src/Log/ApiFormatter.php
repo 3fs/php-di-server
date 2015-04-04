@@ -8,7 +8,7 @@ class ApiFormatter implements FormatterInterface
     /**
      * @var \trifs\DI\Container
      */
-    private $di;
+    private $app;
 
     /**
      * @var array
@@ -25,12 +25,12 @@ class ApiFormatter implements FormatterInterface
     ];
 
     /**
-     * @param  \trifs\DI\Container $di
+     * @param  \trifs\DI\Container $app
      * @return void
      */
-    public function __construct(Container $di)
+    public function __construct(Container $app)
     {
-        $this->di = $di;
+        $this->app = $app;
     }
 
     /**
@@ -43,7 +43,7 @@ class ApiFormatter implements FormatterInterface
         $data = [
             'level'     => $this->mapLogLevel($level),
             'message'   => $message,
-            'requestId' => $this->di->requestId,
+            'requestId' => $this->app->requestId,
         ];
 
         // handle exceptions

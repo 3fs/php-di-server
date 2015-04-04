@@ -12,11 +12,11 @@ class ApiFormatterTest extends TestCase
     public function testFormat()
     {
         // mock request id
-        $this->di->requestId = function () {
+        $this->app->requestId = function () {
             return 'reqid';
         };
 
-        $formatter = new ApiFormatter($this->di);
+        $formatter = new ApiFormatter($this->app);
         $this->assertSame(
             json_encode([
                 'level'     => 'DEBUG',
@@ -33,11 +33,11 @@ class ApiFormatterTest extends TestCase
     public function testFormatWithException()
     {
         // mock request id
-        $this->di->requestId = function () {
+        $this->app->requestId = function () {
             return 'reqid';
         };
 
-        $formatter = new ApiFormatter($this->di);
+        $formatter = new ApiFormatter($this->app);
         $output    = $formatter->format(LOG_DEBUG, new \Exception('test'));
 
         $decodedOutput = json_decode($output, true);
