@@ -74,5 +74,4 @@ class SyslogWriter implements WriterInterface
         }
         return false;
     }
-
 }

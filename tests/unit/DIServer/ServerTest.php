@@ -45,12 +45,14 @@ class ServerTest extends \trifs\DIServer\Tests\Unit\TestCase
     {
         $di = $this->getDI('exception');
 
+        $mockCallback = function ($argument) {
+            return $argument instanceof \Exception;
+        };
+
         $mockedResponse = $this->getMock('\trifs\DIServer\Response', ['fail']);
         $mockedResponse->expects($this->once())
                        ->method('fail')
-                       ->with($this->callback(function ($argument) {
-            return $argument instanceof \Exception;
-        }));
+                       ->with($this->callback($mockCallback));
 
         $di->response = function ($di) use ($mockedResponse) {
             return $mockedResponse;
