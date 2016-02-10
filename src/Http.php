@@ -282,4 +282,14 @@ class Http
      * @var int
      */
     const CODE_NETWORK_AUTHENTICATION_REQUIRED = 511;
+
+    /**
+     * @var string
+     */
+    const CONTENT_TYPE_JSON = 'application/json';
+
+    /**
+     * @var string
+     */
+    const CONTENT_TYPE_HTML = 'text/html';
 }

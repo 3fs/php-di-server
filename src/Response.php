@@ -5,7 +5,7 @@ class Response
 {
 
     /**
-     * @param \Exception $e
+     * @param  \Exception $e
      * @return void
      */
     public function fail(\Exception $exception)
@@ -16,54 +16,78 @@ class Response
             $httpCode = $exception->getCode();
         }
 
-        $this->setHeaders($httpCode);
-
-        $this->output([
-            'error' => $exception->getMessage(),
-            // 'trace' => $exception->getTrace(),
-        ]);
+        $this->setHeaders(['code' => $httpCode]);
+        $this->output(['error' => $exception->getMessage()], []);
     }
 
     /**
-     * @param mixed data
+     * @param  array data
      * @return void
      */
-    public function success($data)
+    public function success(array $data)
     {
         $this->validateResponseData($data);
-        $this->setHeaders($data['code']);
-        $this->output($data['data'] ?: '');
+        $this->setHeaders($data);
+        $this->output($data['data'] ?: '', $data);
     }
 
     /**
-     * @param  mixed $data
+     * @param  mixed $content
+     * @param  array $data
      * @return void
      */
-    protected function output($data)
+    protected function output($content, array $data)
     {
-        $output = json_encode($data);
+        if ($this->getContentType($data) === Http::CONTENT_TYPE_JSON) {
+            $output = json_encode($content);
 
-        if ($output === false) {
-            $this->setHeaders(500);
-            echo sprintf(
-                '{"error": "encoding failed with \"%s\""}',
-                addslashes(json_last_error_msg())
-            );
+            if ($output === false) {
+                $this->setHeaders(['code' => Http::CODE_INTERNAL_ERROR]);
+                echo sprintf(
+                    '{"error": "encoding failed with \"%s\""}',
+                    addslashes(json_last_error_msg())
+                );
+            }
         } else {
-            echo $output;
+            $output = $content;
         }
+
+        echo $output;
     }
 
     /**
-     * @param uint $httpCode
+     * @param  array $data
      * @return void
      */
-    protected function setHeaders($httpCode)
+    protected function setHeaders(array $data)
     {
         if ($this->canSetHeaders()) {
-            http_response_code($httpCode);
-            header('Content-Type: application/json; charset=UTF-8');
+            http_response_code($this->getCode($data));
+            header(sprintf('Content-Type: %s; charset=UTF-8', $this->getContentType($data)));
         }
+    }
+
+    /**
+     * Returns the HTTP code defined in array (`code`) or returns the default code.
+     *
+     * @param  array $data
+     * @return uint
+     */
+    protected function getCode(array $data)
+    {
+        return isset($data['code']) ? (int) $data['code'] : Http::CODE_OK;
+    }
+
+    /**
+     * Returns content type defined in $data array. Retrurns default content type if key is not
+     * defined
+     *
+     * @param  array $data
+     * @return string
+     */
+    protected function getContentType(array $data)
+    {
+        return isset($data['contentType']) ? $data['contentType'] : Http::CONTENT_TYPE_JSON;
     }
 
     /**
@@ -81,8 +105,7 @@ class Response
      */
     protected function validateResponseData($responseData)
     {
-        if (!is_array($responseData) ||
-            !isset($responseData['code'])) {
+        if (!is_array($responseData)) {
             throw new Response\InvalidResponseException('Invalid response received');
         }
     }

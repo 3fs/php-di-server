@@ -9,5 +9,6 @@ return function () {
         ['GET', '/query', 'parameter'],
         ['POST', '/postData', 'parameter'],
         ['GET', '/headers', 'headers'],
+        ['GET', '/html', 'html'],
     ];
 };

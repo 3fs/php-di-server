@@ -20,6 +20,15 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     /**
      * @return void
      */
+    public function testDefaultContentType()
+    {
+        $this->execute('GET', '/');
+        $this->assertHeaderExists('Content-Type', 'application/json; charset=UTF-8');
+    }
+
+    /**
+     * @return void
+     */
     public function testQuery()
     {
         $this->execute('GET', '/query', ['test' => 123]);
@@ -45,6 +54,24 @@ class ApiTest extends \PHPUnit_Framework_TestCase
         $this->execute('GET', '/headers', [], ['X-Test: 123']);
         $this->assertCode(Http::CODE_OK);
         $this->assertResponse(['test' => '123']);
+    }
+
+    /**
+     * @return void
+     */
+    public function testDefaultCode()
+    {
+        $this->execute('GET', '/html');
+        $this->assertCode(Http::CODE_OK);
+    }
+
+    /**
+     * @return void
+     */
+    public function testHtmlContentType()
+    {
+        $this->execute('GET', '/html');
+        $this->assertHeaderExists("Content-Type", "text/html; charset=UTF-8");
     }
 
     /**
@@ -98,5 +125,17 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     protected function assertResponse($data)
     {
         $this->assertSame($data, json_decode($this->response(), true));
+    }
+
+    /**
+     * Assert a response header was defined
+     *
+     * @param  string $header
+     * @return void
+     */
+    protected function assertHeaderExists($name, $value)
+    {
+        $this->assertArrayHasKey($name, $this->headers());
+        $this->assertSame($value, $this->headers()[$name]);
     }
 }

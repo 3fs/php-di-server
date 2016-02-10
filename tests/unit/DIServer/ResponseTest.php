@@ -6,7 +6,6 @@ use \trifs\DIServer\Response;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @return void
      */
@@ -31,6 +30,18 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     /**
      * @return void
      */
+    public function testSuccessShouldWorkWithoutTheCode()
+    {
+        $this->expectOutputString('["data"]');
+        $response = new Response;
+        $response->success([
+            'data' => ['data'],
+        ]);
+    }
+
+    /**
+     * @return void
+     */
     public function testSuccessShouldOutputEmptyStringWhenDataIsSetToNull()
     {
         $this->expectOutputString('""');
@@ -48,8 +59,8 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $response = $this->getMock('\trifs\DIServer\Response', ['setHeaders']);
         $response->expects($this->once())
-                 ->method('setHeaders')
-                 ->with(404);
+            ->method('setHeaders')
+            ->with(['code' => 404]);
 
         $this->expectOutputString('{"error":"message"}');
 
@@ -63,8 +74,8 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $response = $this->getMock('\trifs\DIServer\Response', ['setHeaders']);
         $response->expects($this->once())
-                 ->method('setHeaders')
-                 ->with(Http::CODE_INTERNAL_ERROR);
+            ->method('setHeaders')
+            ->with(['code' => Http::CODE_INTERNAL_ERROR]);
 
         $this->expectOutputString('{"error":"message"}');
 
