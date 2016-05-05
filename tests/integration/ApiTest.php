@@ -93,6 +93,16 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return void
+     */
+    public function testRedirect()
+    {
+        $this->execute('GET', '/redirect');
+        $this->assertCode(Http::CODE_FOUND);
+        $this->assertHeaderExists('Location', 'http://example.com/');
+    }
+
+    /**
      * @param  string     $method
      * @param  string     $endpoint
      * @param  array|void $requestData

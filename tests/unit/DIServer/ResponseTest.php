@@ -81,4 +81,16 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
         $response->fail(new \Exception('message'));
     }
+
+    /**
+     * @return void
+     */
+    public function testRedirect()
+    {
+        $response = new Response;
+        $this->assertSame(
+            ['code' => Http::CODE_FOUND, 'data' => ''],
+            (new Response)->redirect('some://uri')
+        );
+    }
 }

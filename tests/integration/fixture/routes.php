@@ -10,5 +10,6 @@ return function () {
         ['POST', '/postData', 'parameter'],
         ['GET', '/headers', 'headers'],
         ['GET', '/html', 'html'],
+        ['GET', '/redirect', 'redirect'],
     ];
 };

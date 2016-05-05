@@ -32,6 +32,21 @@ class Response
     }
 
     /**
+     * @param  string $redirectTo
+     * @return array
+     */
+    public function redirect($redirectTo)
+    {
+        if ($this->canSetHeaders()) {
+            header(sprintf('Location: %s', $redirectTo));
+        }
+        return [
+            'code' => Http::CODE_FOUND,
+            'data' => '',
+        ];
+    }
+
+    /**
      * @param  mixed $content
      * @param  array $data
      * @return void
