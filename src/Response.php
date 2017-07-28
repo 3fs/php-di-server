@@ -28,7 +28,7 @@ class Response
     {
         $this->validateResponseData($data);
         $this->setHeaders($data);
-        $this->output($data['data'] ?: '', $data);
+        $this->output(isset($data['data']) ? $data['data']: '', $data);
     }
 
     /**
